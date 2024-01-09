@@ -82,7 +82,7 @@ def main():
         event_data = {
             "namaAcara": selected_event,
             "program": selected_program,
-            "tabItem": selected_tab_item,
+            "tabName": selected_tab_item,
             "tanggalAcara": str(tanggal_acara),
             "jamMulai": str(jam_mulai),
             "jamSelesai": str(jam_selesai),
