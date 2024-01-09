@@ -23,7 +23,8 @@ def main():
     st.title("QR Code Generator for Events")
 
     programs = [
-        "Training SM7" "Training PSA",
+        "Training SM7",
+        "Training PSA",
         "Training PRU SALES ACADEMY",
         "Sertifikat Product & Knowledge",
         "Sales Skill & Product Knowledge",
