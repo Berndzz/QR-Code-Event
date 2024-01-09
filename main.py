@@ -24,7 +24,6 @@ def main():
 
     programs = [
         "Training SM7",
-        "Training PSA",
         "Training PRU SALES ACADEMY",
         "Sertifikat Product & Knowledge",
         "Sales Skill & Product Knowledge",
