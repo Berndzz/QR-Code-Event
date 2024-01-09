@@ -22,9 +22,55 @@ def create_qr_code(data):
 def main():
     st.title("QR Code Generator for Events")
 
+    programs = [
+        "Training PSA",
+        "Training PRU SALES ACADEMY",
+        "Sertifikat Product & Knowledge",
+        "Sales Skill & Product Knowledge",
+    ]
+
+    events = [
+        "True Talk",
+        "True Story",
+        "True Gathering",
+        "MFC",
+        "AML",
+        "PRULeads",
+        "PRUFliks Series",
+        "Ayo Kita Syariah",
+        "Training PRUCinta",
+        "Training PCB88",
+        "Sertifikasi PRUWarisan",
+        "Sertifikasi PKKS",
+        "Sertifikasi PSS + Pro",
+        "Sertifikasi PRUCerah",
+        "Unit Link",
+        "Basic Financial Planning",
+        "Claim Update",
+        "Operation Workshop",
+        "PRUTop CCB61 & ESCC",
+        "Prudential Financial Advisor",
+        "PRUSales Builder",
+        "Semua Bisa Menjual Syariah",
+        "Upsell PRUCinta",
+        "Semua Bisa Menjual PCB88",
+    ]
+
+    tab_items = [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Material",
+        "PSA",
+        "PRU Sales Academy",
+        "Sertifikat & Knowledge Academy",
+        "Sales Skill & Product",
+    ]
+
     with st.form("event_form", clear_on_submit=True):
-        nama_acara = st.text_input("Nama Acara")
-        program = st.text_input("Program")
+        selected_event = st.selectbox("Pilih Acara", events)
+        selected_program = st.selectbox("Pilih Program", programs)
+        selected_tab_item = st.selectbox("Pilih Tab Item", tab_items)
         tanggal_acara = st.date_input("Tanggal Acara")
         jam_mulai = st.time_input("Jam Mulai")
         jam_selesai = st.time_input("Jam Selesai")
@@ -33,8 +79,9 @@ def main():
 
     if submit_button:
         event_data = {
-            "namaAcara": nama_acara,
-            "program": program,
+            "namaAcara": selected_event,
+            "program": selected_program,
+            "tabItem": selected_tab_item,
             "tanggalAcara": str(tanggal_acara),
             "jamMulai": str(jam_mulai),
             "jamSelesai": str(jam_selesai),
