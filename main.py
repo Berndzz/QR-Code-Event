@@ -20,7 +20,7 @@ def create_qr_code(data):
 
 
 def main():
-    st.title("QR Code Generator for Events")
+    st.title("QR Code Generator for Events TRUE AGENCY SM7")
 
     programs = [
         "Training SM7",
