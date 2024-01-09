@@ -62,7 +62,6 @@ def main():
         "Q2",
         "Q3",
         "Material",
-        "PSA",
         "PRU Sales Academy",
         "Sertifikat & Knowledge Academy",
         "Sales Skill & Product",
