@@ -3,6 +3,61 @@ import qrcode
 import json
 from PIL import Image
 import io
+import firebase_admin
+from firebase_admin import credentials, db
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate("path_firebase/firebase_credentials.json")
+    firebase_admin.initialize_app(
+        cred, {"databaseURL": "https://trueguide-846cb-default-rtdb.firebaseio.com/"}
+    )
+
+
+def display_data(data):
+    num_items = len(data)
+    num_columns = min(num_items, 5)  # Atur jumlah kolom maksimum di sini
+
+    # Hitung jumlah baris per kolom
+    rows_per_column = num_items // num_columns + (num_items % num_columns > 0)
+
+    for i in range(rows_per_column):
+        cols = st.columns(num_columns)
+        for j in range(num_columns):
+            idx = i + j * rows_per_column
+            if idx < num_items:
+                key, value = list(data.items())[idx]
+                cols[j].write(f"Kategori: {value['category']}")
+                cols[j].write(f"Judul Aktivitas: {value['judul_aktivitas']}")
+                cols[j].write(f"Deskripsi Aktivitas: {value['deskripsi_aktivitas']}")
+                cols[j].write(f"Hari Aktivitas: {value['hari_aktivitas']}")
+                cols[j].image(
+                    value["gambar_aktivitas"],
+                    caption="Gambar Aktivitas",
+                    use_column_width=True,
+                )
+                cols[j].write(f"Body Aktivitas: {value['body_aktivitas']}")
+                cols[j].markdown("---")
+
+
+def get_data(path):
+    ref = db.reference(path)
+    data = ref.get()
+    return data
+
+
+def add_data(path, new_data):
+    ref = db.reference(path)
+    ref.push(new_data)
+
+
+def update_data(path, data_key, updated_data):
+    ref = db.reference(path)
+    ref.child(data_key).update(updated_data)
+
+
+def delete_data(path, data_key):
+    ref = db.reference(path)
+    ref.child(data_key).delete()
 
 
 def create_qr_code(data):
@@ -20,6 +75,100 @@ def create_qr_code(data):
 
 
 def main():
+    st.title("Data Kegiatan Mingguan")
+
+    path = [
+        "/SM7",
+        "/SALES_SKILL",
+        "/PRODUCT_&_KNOWLEDGE",
+        "/PRU_SALES_ACADEMY",
+        "/PERSONAL_EXCELLENT_MENTALITY_ATTITUDE",
+    ]
+
+    st.title("List Data:")
+    selected_path = st.selectbox("Select path:", path)
+    data = get_data(selected_path)
+    # st.write(data)
+
+    if data:
+        display_data(data)
+    else:
+        st.write("Data tidak ditemukan.")
+
+    # Form untuk menambahkan data baru
+    st.title("Tambah Data")
+    body_aktivitas = st.text_input("Body Aktivitas")
+    category = st.text_input("Category")
+    deskripsi_aktivitas = st.text_input("Deskripsi Aktivitas")
+    gambar_aktivitas = st.text_input("Gambar Aktivitas")
+    hari_aktivitas = st.text_input("Hari Aktivitas")
+    judul_aktivitas = st.text_input("Judul Aktivitas")
+
+    if st.button("Tambah Data"):
+        new_data = {
+            "body_aktivitas": body_aktivitas,
+            "category": category,
+            "deskripsi_aktivitas": deskripsi_aktivitas,
+            "gambar_aktivitas": gambar_aktivitas,
+            "hari_aktivitas": hari_aktivitas,
+            "judul_aktivitas": judul_aktivitas,
+        }
+        add_data(selected_path, new_data)
+
+    # Ambil data dari Firebase
+    data = get_data(selected_path)
+
+    # Form untuk mengubah data yang ada
+    st.title("Update Existing Data")
+    data_to_update = st.selectbox("Select data to update:", list(data.keys()))
+
+    updated_body_aktivitas = st.text_input(
+        "Updated Body Aktivitas", data[data_to_update]["body_aktivitas"]
+    )
+    updated_category = st.text_input(
+        "Updated Category", data[data_to_update]["category"]
+    )
+    updated_deskripsi_aktivitas = st.text_input(
+        "Updated Deskripsi Aktivitas", data[data_to_update]["deskripsi_aktivitas"]
+    )
+    updated_gambar_aktivitas = st.text_input(
+        "Updated Gambar Aktivitas", data[data_to_update]["gambar_aktivitas"]
+    )
+    updated_hari_aktivitas = st.text_input(
+        "Updated Hari Aktivitas", data[data_to_update]["hari_aktivitas"]
+    )
+    updated_judul_aktivitas = st.text_input(
+        "Updated Judul Aktivitas", data[data_to_update]["judul_aktivitas"]
+    )
+
+    if st.button("Update"):
+        updated_data = {
+            "body_aktivitas": updated_body_aktivitas,
+            "category": updated_category,
+            "deskripsi_aktivitas": updated_deskripsi_aktivitas,
+            "gambar_aktivitas": updated_gambar_aktivitas,
+            "hari_aktivitas": updated_hari_aktivitas,
+            "judul_aktivitas": updated_judul_aktivitas,
+        }
+        update_data(selected_path, data_to_update, updated_data)
+
+    st.title("Hapus Data")
+    data_to_delete = st.selectbox(
+        "Pilih judul aktivitas untuk dihapus:",
+        [value["judul_aktivitas"] for value in data.values()],
+    )
+
+    if st.button("Hapus"):
+        key_to_delete = None
+        for key, value in data.items():
+            if value["judul_aktivitas"] == data_to_delete:
+                key_to_delete = key
+                break
+        if key_to_delete:
+            delete_data(selected_path, key_to_delete)
+        else:
+            st.error("Judul aktivitas tidak ditemukan.")
+
     st.title("QR Code Generator for Events TRUE AGENCY SM7")
 
     programs = [
