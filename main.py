@@ -97,12 +97,22 @@ def main():
 
     # Form untuk menambahkan data baru
     st.title("Tambah Data")
-    body_aktivitas = st.text_input("Body Aktivitas")
-    category = st.text_input("Category")
-    deskripsi_aktivitas = st.text_input("Deskripsi Aktivitas")
+    body_aktivitas = st.text_input("Hari Aktivitas", help="Misalnya: Senin")
+    category_list = [
+        "SM7",
+        "SALES_SKILL",
+        "PRODUCT_&_KNOWLEDGE",
+        "PRU_SALES_ACADEMY",
+        "PERSONAL_EXCELLENT_MENTALITY_ATTITUDE",
+    ]
+    category = st.selectbox("Category:", category_list)
+    deskripsi_aktivitas = st.text_input(
+        "Deskripsi Aktivitas",
+        help="Misalnya: Kegiatan kumpul-kumpul bersama partner bisni",
+    )
     gambar_aktivitas = st.text_input("Gambar Aktivitas")
-    hari_aktivitas = st.text_input("Hari Aktivitas")
-    judul_aktivitas = st.text_input("Judul Aktivitas")
+    hari_aktivitas = st.text_input("Tanggal Aktivitas", help="Misalnya: 21 April 2024")
+    judul_aktivitas = st.text_input("Judul Aktivitas", help="Misalnya: True Workshop")
 
     if st.button("Tambah Data"):
         new_data = {
