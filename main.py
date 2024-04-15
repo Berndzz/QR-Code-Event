@@ -118,6 +118,11 @@ def main():
     # Ambil data dari Firebase
     data = get_data(selected_path)
 
+    # Periksa kembali apakah data kosong setelah menambahkan
+    if not data:
+        st.write("Data tidak ditemukan.")
+        return
+
     # Form untuk mengubah data yang ada
     st.title("Update Existing Data")
     data_to_update = st.selectbox("Select data to update:", list(data.keys()))
