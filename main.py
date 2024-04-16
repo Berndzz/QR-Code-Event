@@ -108,7 +108,7 @@ def main():
     category = st.selectbox("Category:", category_list)
     deskripsi_aktivitas = st.text_input(
         "Deskripsi Aktivitas",
-        help="Misalnya: Kegiatan kumpul-kumpul bersama partner bisni",
+        help="Misalnya: Kegiatan kumpul-kumpul bersama partner bisnis",
     )
     gambar_aktivitas = st.text_input("Gambar Aktivitas")
     hari_aktivitas = st.text_input("Tanggal Aktivitas", help="Misalnya: 21 April 2024")
@@ -134,38 +134,50 @@ def main():
         return
 
     # Form untuk mengubah data yang ada
+    # Form untuk mengubah data yang ada
     st.title("Update Existing Data")
-    data_to_update = st.selectbox("Select data to update:", list(data.keys()))
-
-    updated_body_aktivitas = st.text_input(
-        "Updated Body Aktivitas", data[data_to_update]["body_aktivitas"]
-    )
-    updated_category = st.text_input(
-        "Updated Category", data[data_to_update]["category"]
-    )
-    updated_deskripsi_aktivitas = st.text_input(
-        "Updated Deskripsi Aktivitas", data[data_to_update]["deskripsi_aktivitas"]
-    )
-    updated_gambar_aktivitas = st.text_input(
-        "Updated Gambar Aktivitas", data[data_to_update]["gambar_aktivitas"]
-    )
-    updated_hari_aktivitas = st.text_input(
-        "Updated Hari Aktivitas", data[data_to_update]["hari_aktivitas"]
-    )
-    updated_judul_aktivitas = st.text_input(
-        "Updated Judul Aktivitas", data[data_to_update]["judul_aktivitas"]
+    selected_judul_aktivitas = st.selectbox(
+        "Select judul aktivitas to update:",
+        [value["judul_aktivitas"] for value in data.values()],
     )
 
-    if st.button("Update"):
-        updated_data = {
-            "body_aktivitas": updated_body_aktivitas,
-            "category": updated_category,
-            "deskripsi_aktivitas": updated_deskripsi_aktivitas,
-            "gambar_aktivitas": updated_gambar_aktivitas,
-            "hari_aktivitas": updated_hari_aktivitas,
-            "judul_aktivitas": updated_judul_aktivitas,
-        }
-        update_data(selected_path, data_to_update, updated_data)
+    # Temukan data yang sesuai dengan judul_aktivitas yang dipilih
+    selected_data = None
+    for key, value in data.items():
+        if value["judul_aktivitas"] == selected_judul_aktivitas:
+            selected_data = value
+            break
+
+    if selected_data:
+        updated_body_aktivitas = st.text_input(
+            "Updated Body Aktivitas", selected_data["body_aktivitas"]
+        )
+        updated_category = st.text_input("Updated Category", selected_data["category"])
+        updated_deskripsi_aktivitas = st.text_input(
+            "Updated Deskripsi Aktivitas", selected_data["deskripsi_aktivitas"]
+        )
+        updated_gambar_aktivitas = st.text_input(
+            "Updated Gambar Aktivitas", selected_data["gambar_aktivitas"]
+        )
+        updated_hari_aktivitas = st.text_input(
+            "Updated Hari Aktivitas", selected_data["hari_aktivitas"]
+        )
+        updated_judul_aktivitas = st.text_input(
+            "Updated Judul Aktivitas", selected_data["judul_aktivitas"]
+        )
+
+        if st.button("Update"):
+            updated_data = {
+                "body_aktivitas": updated_body_aktivitas,
+                "category": updated_category,
+                "deskripsi_aktivitas": updated_deskripsi_aktivitas,
+                "gambar_aktivitas": updated_gambar_aktivitas,
+                "hari_aktivitas": updated_hari_aktivitas,
+                "judul_aktivitas": updated_judul_aktivitas,
+            }
+            update_data(selected_path, selected_judul_aktivitas, updated_data)
+    else:
+        st.write("Judul aktivitas tidak ditemukan dalam data.")
 
     st.title("Hapus Data")
     data_to_delete = st.selectbox(
